@@ -7,7 +7,9 @@ import time
 # ==========================================
 # 1. API Key & Model Configuration
 # ==========================================
-API_KEY = "AIzaSyAKCu4i58d2xg1U60Hkn1dsqeceJHAuosM"
+load_dotenv()
+
+API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
 # ==========================================
