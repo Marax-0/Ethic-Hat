@@ -13,8 +13,6 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from PIL import Image
 import google.generativeai as genai
@@ -45,22 +43,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve frontend static files
-FRONTEND_DIR = Path(__file__).parent / "frontend"
-app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
-
 BIAS_REPORTS_FILE = Path(__file__).parent / "bias_reports.json"
 
 
 # ==========================================
 # Routes
 # ==========================================
-@app.get("/")
-async def serve_index():
-    """Serve the frontend index.html"""
-    return FileResponse(str(FRONTEND_DIR / "index.html"))
-
-
 @app.post("/analyze")
 async def analyze_image(file: UploadFile = File(...)):
     """
