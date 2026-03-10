@@ -11,7 +11,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   useWindowDimensions,
+  Image
 } from 'react-native';
+import { MotiView, AnimatePresence } from 'moti'; // <-- อิมพอร์ต Moti ตรงนี้
 import { useHelmetDetection } from '@/hooks/use-helmet-detection';
 import {
   ImageInputSection,
@@ -20,7 +22,7 @@ import {
   AnalyzeResult,
   BiasReportSection,
   Toast,
-  ErrorCard,
+  ErrorCard
 } from '@/components/helmet-detection';
 
 export default function HomeScreen() {
@@ -55,47 +57,99 @@ export default function HomeScreen() {
         }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerIcon}>🏍️</Text>
+        {/* Header - Animate เข้ามาจากด้านบน */}
+        <MotiView
+          from={{ opacity: 0, translateY: -20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 500 }}
+          style={styles.header}
+        >
+          <Image source={require('../../assets/images/happy-face.png')} style={styles.headerIcon} />
           <Text style={styles.headerTitle}>Helmet Detection AI</Text>
           <Text style={styles.headerSubtitle}>ตรวจจับหมวกกันน็อก & วิเคราะห์ Bias ด้วย AI</Text>
-        </View>
+        </MotiView>
 
-        {/* Image Input */}
-        <ImageInputSection onImageSelected={setPreview} onError={(msg) => showToast(msg, 'warning')} />
-
-        {/* Preview */}
-        {currentImageUri && (
-          <ImagePreview imageUri={currentImageUri} onClear={clearPreview} />
-        )}
-
-        {/* Analyze Button */}
-        <TouchableOpacity
-          style={[styles.analyzeBtn, (!currentImageUri || loading) && styles.analyzeBtnDisabled]}
-          onPress={analyzeImage}
-          disabled={!currentImageUri || loading}
-          activeOpacity={0.8}
+        {/* Image Input - Fade in จากด้านล่าง */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 500, delay: 100 }}
         >
-          <Text style={styles.analyzeBtnText}>🔍 วิเคราะห์ด้วย AI</Text>
-        </TouchableOpacity>
+          <ImageInputSection onImageSelected={setPreview} onError={(msg) => showToast(msg, 'warning')} />
+        </MotiView>
 
-        {/* Error */}
-        <ErrorCard message={error || ''} />
+        {/* Preview - เด้ง (Scale) ขึ้นมาเมื่อมีรูปภาพ */}
+        <AnimatePresence>
+          {currentImageUri && (
+            <MotiView
+              key="preview"
+              from={{ opacity: 0, scale: 0.8, height: 0, marginBottom: 0 }}
+              animate={{ opacity: 1, scale: 1, height: 'auto', marginBottom: 16 }}
+              exit={{ opacity: 0, scale: 0.8, height: 0, marginBottom: 0 }}
+              transition={{ type: 'spring', damping: 15 }}
+            >
+              <ImagePreview imageUri={currentImageUri} onClear={clearPreview} />
+            </MotiView>
+          )}
+        </AnimatePresence>
 
-        {/* Result */}
-        {lastResult && <AnalyzeResult data={lastResult} />}
+        {/* Analyze Button - Fade in */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 500, delay: 200 }}
+        >
+          <TouchableOpacity
+            style={[styles.analyzeBtn, (!currentImageUri || loading) && styles.analyzeBtnDisabled]}
+            onPress={analyzeImage}
+            disabled={!currentImageUri || loading}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.analyzeBtnText}>🔍 วิเคราะห์ด้วย AI</Text>
+          </TouchableOpacity>
+        </MotiView>
 
-        {/* Bias Report */}
-        {lastResult && (
-          <BiasReportSection onReport={reportBias} />
-        )}
+        {/* Error - โชว์พร้อมกับเด้งเตือน (ถ้ามี) */}
+        <AnimatePresence>
+          {error && (
+            <MotiView
+              from={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring' }}
+            >
+              <ErrorCard message={error} />
+            </MotiView>
+          )}
+        </AnimatePresence>
+
+        {/* Result & Bias Report - เลื่อนขึ้นมาเมื่อวิเคราะห์เสร็จ */}
+        <AnimatePresence>
+          {lastResult && (
+            <MotiView
+              key="results"
+              from={{ opacity: 0, translateY: 30 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: 30 }}
+              transition={{ type: 'spring', delay: 100 }}
+            >
+              <AnalyzeResult data={lastResult} />
+              <View style={{ height: 16 }} /> {/* เว้นระยะห่าง */}
+              <BiasReportSection onReport={reportBias} />
+            </MotiView>
+          )}
+        </AnimatePresence>
 
         {/* Footer */}
-        <View style={styles.footer}>
+        <MotiView 
+          from={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ duration: 800, delay: 400 }} 
+          style={styles.footer}
+        >
           <Text style={styles.footerText}>Powered by Google Gemini AI</Text>
           <Text style={styles.footerText}>Project Ethics — AI Bias Analysis • 2026</Text>
-        </View>
+        </MotiView>
       </ScrollView>
 
       {/* Toast */}
@@ -127,10 +181,6 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     paddingVertical: 24,
-    marginBottom: 8,
-  },
-  headerIcon: {
-    fontSize: 56,
     marginBottom: 8,
   },
   headerTitle: {
@@ -174,4 +224,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 4,
   },
+  headerIcon: {
+    width: 64,
+    height: 64,
+    marginBottom: 12,
+  }
 });

@@ -2,8 +2,9 @@
  * ImageInputSection - เลือกรูปจากกล้องหรือแกลเลอรี่
  */
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Camera, Upload} from 'lucide-react-native';
 
 interface ImageInputSectionProps {
   onImageSelected: (uri: string, file: { uri: string; name: string; type: string }) => void;
@@ -79,7 +80,7 @@ export function ImageInputSection({ onImageSelected, onError }: ImageInputSectio
 
   return (
     <View style={styles.container}>
-      <Text style={styles.cardTitle}>📸 เลือกรูปภาพ</Text>
+      <Text style={styles.cardTitle}> Select Photo</Text>
 
       <View style={styles.tabs}>
         <TouchableOpacity
@@ -88,7 +89,7 @@ export function ImageInputSection({ onImageSelected, onError }: ImageInputSectio
           activeOpacity={0.8}
         >
           <Text style={[styles.tabText, activeTab === 'camera' && styles.tabTextActive]}>
-            📷 กล้องถ่ายรูป
+            <Camera /> กล้องถ่ายรูป
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -97,13 +98,13 @@ export function ImageInputSection({ onImageSelected, onError }: ImageInputSectio
           activeOpacity={0.8}
         >
           <Text style={[styles.tabText, activeTab === 'gallery' && styles.tabTextActive]}>
-            🖼️ อัปโหลด
+            <Upload />อัปโหลด
           </Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.uploadArea}>
-        <Text style={styles.uploadIcon}>🖼️</Text>
+        <Text style={styles.uploadIcon}><Image source={require('../../assets/images/picture.png')} style={styles.uploadIconImage} /></Text>
         <Text style={styles.uploadText}>แตะปุ่มด้านบนเพื่อเลือกรูปจากกล้องหรือแกลเลอรี่</Text>
         <Text style={styles.uploadHint}>รองรับ JPG, PNG</Text>
       </View>
@@ -127,6 +128,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.2,
     marginBottom: 12,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
   },
   tabs: {
     flexDirection: 'row',
@@ -154,6 +158,9 @@ const styles = StyleSheet.create({
     color: '#a0a0c0',
     fontWeight: '600',
     fontSize: 14,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
   },
   tabTextActive: {
     color: '#fff',
@@ -167,8 +174,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   uploadIcon: {
-    fontSize: 40,
+    fontSize: 30,
+    // width: 20,
     marginBottom: 8,
+    color: 'rgba(255, 255, 255, 0.3)',
+  },
+  uploadIconImage: {
+    width: 100,
+    height:100,
   },
   uploadText: {
     color: '#a0a0c0',
