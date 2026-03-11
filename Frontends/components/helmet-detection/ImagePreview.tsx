@@ -13,7 +13,7 @@ export function ImagePreview({ imageUri, onClear }: ImagePreviewProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.cardTitle}>🖼️ ภาพที่เลือก</Text>
+        <Text style={styles.cardTitle}>Photo Selected</Text>
         {onClear && (
           <TouchableOpacity onPress={onClear} style={styles.clearBtn} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
             <Text style={styles.clearText}>✕ ลบ</Text>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#a78bfa',
+    color: '#0b2350',
     textTransform: 'uppercase',
     letterSpacing: 1.2,
   },

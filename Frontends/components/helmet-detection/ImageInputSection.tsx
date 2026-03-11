@@ -104,7 +104,7 @@ export function ImageInputSection({ onImageSelected, onError }: ImageInputSectio
       </View>
 
       <View style={styles.uploadArea}>
-        <Text style={styles.uploadIcon}><Image source={require('../../assets/images/picture.png')} style={styles.uploadIconImage} /></Text>
+        <Text style={styles.uploadIcon}><Image source={require('../../assets/images/face.png')} style={styles.uploadIconImage} /></Text>
         <Text style={styles.uploadText}>แตะปุ่มด้านบนเพื่อเลือกรูปจากกล้องหรือแกลเลอรี่</Text>
         <Text style={styles.uploadHint}>รองรับ JPG, PNG</Text>
       </View>
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#a78bfa',
+    color: '#174fb8',
     textTransform: 'uppercase',
     letterSpacing: 1.2,
     marginBottom: 12,
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabActive: {
-    backgroundColor: '#7b2ff7',
-    shadowColor: '#7b2ff7',
+    backgroundColor: '#0b2350',
+    shadowColor: '#0b2350',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
   uploadIconImage: {
     width: 100,
     height:100,
+    tintColor: 'rgba(255, 255, 255, 0.48)',
   },
   uploadText: {
     color: '#a0a0c0',
